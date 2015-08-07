@@ -1,0 +1,66 @@
+
+<h1 id="player_one" data-name="<%= @game.player_one.name %>">Player One: <%= @game.player_one.name %> </h1>
+<table id="game_strip">
+  <tr id="player_one_strip">
+    <td class="active"></td>
+    <% 9.times do %>
+      <td></td>
+    <% end %>
+  </td>
+  <tr id="player_two_strip">
+    <td class="active"></td>
+    <% 9.times do %>
+      <td></td>
+    <% end %>
+  </td>
+</table>
+<h1 id="player_two" data-name="<%= @game.player_two.name %>">Player Two: <%= @game.player_two.name %> </h1>
+
+<script>
+    // Define Player Class
+    function Player(name, strip){
+      this.name = name;
+      this.strip = strip;
+
+      //Player move forward method
+      this.moveForward = function(){
+        var position = this.strip.children(".active").index();
+        this.strip.children("td").eq(position).removeClass("active");
+        this.strip.children("td").eq(position + 1).addClass("active");
+      }
+
+      //Check if player is at the end?
+      this.atTheEnd = function(){
+        return(this.strip.children("td:last-child").hasClass("active"));
+      }
+    }
+
+    // Define Game class
+    function Game(player_one, player_two){
+      // Similar to instance variables with attr_accessor
+      this.player_one = player_one;
+      this.player_two = player_two;
+
+      //Check if players are at the end
+      this.ended = function(){
+        return(this.player_one.atTheEnd() || this.player_two.atTheEnd())
+      }
+    }
+
+    //Create player objects
+    player_one = new Player($("#player_one").data("name"), $("#player_one_strip"))
+    player_two = new Player($("#player_two").data("name"), $("#player_two_strip"))
+    //Create game objects
+    game = new Game(player_one, player_two)
+
+    $(document).on("keyup", function(e){
+      if(e.keyCode === 81){
+        player_one.moveForward();
+      }else if(e.keyCode === 80){
+        player_two.moveForward();
+      }
+      if(game.ended()){
+        alert("Ended!")
+      }
+    })
+</script>
